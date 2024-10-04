@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Category } from '../interfaces/categories.interface';
 import { Difficulty } from '../interfaces/difficulties.interface';
-import { Answer, QuizQuestion, Result } from '../interfaces/quiz-questions.interface';
+import { Answer, AnswerStatus, QuizQuestion, Result } from '../interfaces/quiz-questions.interface';
+import { QuizResult } from './quiz-results.hook';
 
 export const useQuizQuestions = () => {
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   const [quizLoading, setQuizLoading] = useState(false);
   const [quizError, setQuizError] = useState<TypeError | null>(null);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const [quizResults, setQuizResults] = useState<QuizResult | null>(null);
 
   useEffect(() => {
     if (quizQuestions.length === 0) return;
@@ -40,11 +42,63 @@ export const useQuizQuestions = () => {
   const toggleAnswer = (updatedQuestion: QuizQuestion, updatedAnswer: Answer) => {
     const updatedQuestions = quizQuestions.map((question) =>
       updatedQuestion.question === question.question
-        ? { ...question, answers: question.answers.map((answer) => (answer.text === updatedAnswer.text ? { ...answer, selected: !answer.selected } : answer)) }
+        ? {
+            ...question,
+            answers: question.answers.map((answer) =>
+              answer.text === updatedAnswer.text ? { ...answer, selected: !answer.selected } : { ...answer, selected: false }
+            ),
+          }
         : question
     );
 
     setQuizQuestions(updatedQuestions);
+  };
+
+  const submitQuiz = () => {
+    updateQuizResults();
+    updateAnswerStatus();
+  };
+
+  const updateQuizResults = () => {
+    setQuizResults({ numberOfCorrectAnswers: 0, color: 'red' });
+
+    quizQuestions.forEach((question) => {
+      const selectedAnswer = question.answers.find((answer) => answer.selected)?.text;
+      const correctAnswer = question.correct_answer;
+
+      if (selectedAnswer === correctAnswer) {
+        setQuizResults((update) => {
+          if (!update) {
+            return null;
+          }
+          return { ...update, numberOfCorrectAnswers: update.numberOfCorrectAnswers + 1 };
+        });
+      }
+    });
+
+    setQuizResults((update) => {
+      if (!update) {
+        return null;
+      }
+
+      return { ...update, color: getQuizResultColor(update.numberOfCorrectAnswers) };
+    });
+  };
+
+  const updateAnswerStatus = () => {
+    const getStatus = (isCorrectAnswer: boolean): AnswerStatus => {
+      return isCorrectAnswer ? 'correct' : 'incorrect';
+    };
+
+    const cleanQuestions = quizQuestions.map((question) => ({
+      ...question,
+      answers: question.answers.map((answer) => ({ ...answer, status: 'not-defined' as AnswerStatus })),
+    }));
+    const questions = cleanQuestions.map((question) => ({
+      ...question,
+      answers: question.answers.map((answer) => (answer.selected ? { ...answer, status: getStatus(isCorrectAnswer(question)) } : answer)),
+    }));
+    setQuizQuestions(questions);
   };
 
   return {
@@ -54,8 +108,16 @@ export const useQuizQuestions = () => {
     fetchQuizQuestions,
     toggleAnswer,
     canSubmit,
+    submitQuiz,
+    quizResults,
   };
 };
+
+function getQuizResultColor(numberOfCorrectAnswers: number): 'red' | 'green' | 'yellow' {
+  if (numberOfCorrectAnswers >= 4) return 'green';
+  else if (numberOfCorrectAnswers >= 2) return 'yellow';
+  else return 'red';
+}
 
 function getQuizQuestions(results: Result[]): QuizQuestion[] {
   return results.map((quizQuestion) => ({
@@ -83,4 +145,11 @@ function shuffle(arr: string[]) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+function isCorrectAnswer(question: QuizQuestion) {
+  const selectedAnswer = question.answers.find((answer) => answer.selected)?.text;
+  const correctAnswer = question.correct_answer;
+
+  return selectedAnswer === correctAnswer;
 }

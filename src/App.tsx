@@ -15,7 +15,7 @@ function App() {
   const { categories, error, loading } = useCategories();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('easy');
-  const { quizQuestions, quizLoading, fetchQuizQuestions, toggleAnswer, canSubmit } = useQuizQuestions();
+  const { quizQuestions, quizLoading, fetchQuizQuestions, toggleAnswer, canSubmit, quizResults, submitQuiz } = useQuizQuestions();
 
   const handleCategoryChange = (categoryName: string) => {
     const foundCategory = categories.find((category) => category.name === categoryName);
@@ -30,7 +30,7 @@ function App() {
 
   const handleAnswerButtonClick = (question: QuizQuestion, answer: Answer) => toggleAnswer(question, answer);
 
-  const handleSubmitButton = () => console.log('Submit');
+  const handleSubmitButton = () => submitQuiz();
 
   return (
     <div className='w-full h-full'>
@@ -43,6 +43,7 @@ function App() {
         </div>
         <QuizQuestionsList questions={quizQuestions} loading={quizLoading} onAnswerButtonClick={handleAnswerButtonClick} />
         <SubmitButton canSubmit={canSubmit} onButtonClick={handleSubmitButton} />
+        <div>{quizResults?.color}  {quizResults?.numberOfCorrectAnswers} </div> 
       </div>
     </div>
   );
