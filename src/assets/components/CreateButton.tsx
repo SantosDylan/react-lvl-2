@@ -10,7 +10,6 @@ export default function CreateButton({ selectedCategory, onButtonClick }: Create
 
   const getButtonClasses = (disabled: boolean) => {
   const baseClasses = 'text-sm font-medium py-2 px-3 text-center rounded-lg border focus:outline-none focus:ring-2';
-
   const disabledClasses = 'bg-gray-300 text-gray-500 border-gray-300 cursor-not-allowed';
   
 

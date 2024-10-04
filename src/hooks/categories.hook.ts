@@ -10,7 +10,6 @@ export const useCategories = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch('https://opentdb.com/api_category.php');
-        console.log({ response });
         const categoriesResponse = (await response.json()) as CategoryResponse;
         setCategories(categoriesResponse.trivia_categories);
       } catch (err) {
