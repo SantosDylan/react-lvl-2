@@ -23,7 +23,7 @@ export function getQuizResultColor(numberOfCorrectAnswers: number): 'red' | 'gre
   export function getAnswers(correct_answer: string, incorrect_answer: string[]): Answer[] {
     const answers = [...incorrect_answer, correct_answer];
   
-    return shuffle(answers).map((answer) => ({ text: answer, status: 'not-defined', selected: false }));
+    return shuffle(answers).map((answer) => ({ text: decodeHtmlEntities(answer), status: 'not-defined', selected: false }));
   }
   
   function shuffle(arr: string[]) {
@@ -33,4 +33,4 @@ export function getQuizResultColor(numberOfCorrectAnswers: number): 'red' | 'gre
     }
     return arr;
   }
-  
+    
