@@ -24,14 +24,11 @@ function Quiz() {
     setSelectedCategory(foundCategory ?? null);
   };
 
-  const handleDifficultyChange = (difficulty: Difficulty) => {
-    setSelectedDifficulty(difficulty);
-  };
+  const handleDifficultyChange = (difficulty: Difficulty) => setSelectedDifficulty(difficulty);
 
   const handleCreateButtonClick = () => fetchQuizQuestions(selectedCategory, selectedDifficulty);
 
   const handleAnswerButtonClick = (question: QuizQuestion, answer: Answer) => toggleAnswer(question, answer);
-
 
   return (
     <div className='w-full h-full'>
@@ -45,7 +42,7 @@ function Quiz() {
         <QuizQuestionsList questions={quizQuestions} loading={quizLoading} onAnswerButtonClick={handleAnswerButtonClick} />
 
         <Link to={'/result'}>
-        <SubmitButton onButtonClick={submitQuiz} canSubmit={canSubmit}/>
+          <SubmitButton onButtonClick={submitQuiz} canSubmit={canSubmit} />
         </Link>
       </div>
     </div>
