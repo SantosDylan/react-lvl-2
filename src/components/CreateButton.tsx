@@ -1,4 +1,4 @@
-import { Category } from '../../interfaces/categories.interface';
+import { Category } from '../interfaces/categories.interface';
 
 interface CreateButtonProps {
   selectedCategory: Category | null;

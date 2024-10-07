@@ -1,6 +1,4 @@
-// interface CategorySelectProps {
-
-import { Difficulty } from '../../interfaces/difficulties.interface';
+import { Difficulty } from '../interfaces/difficulties.interface';
 
 interface DifficultyProps {
   selectedDifficulty: Difficulty;

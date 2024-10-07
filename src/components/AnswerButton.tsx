@@ -1,4 +1,4 @@
-import { Answer, AnswerStatus } from '../../interfaces/quiz-questions.interface';
+import { Answer, AnswerStatus } from '../interfaces/quiz-questions.interface';
 
 interface AnswerButtonProps {
   answer: Answer;
