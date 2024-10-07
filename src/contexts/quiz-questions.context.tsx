@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from 'react';
-import { QuizResult } from '../hooks/quiz-results.hook';
+import { QuizResult } from '../interfaces/quiz-results.interface';
 import { Category } from '../interfaces/categories.interface';
 import { Difficulty } from '../interfaces/difficulties.interface';
 import { Answer, QuizQuestion } from '../interfaces/quiz-questions.interface';

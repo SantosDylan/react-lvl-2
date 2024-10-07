@@ -34,10 +34,3 @@ export function getQuizResultColor(numberOfCorrectAnswers: number): 'red' | 'gre
     return arr;
   }
   
-  export function isCorrectAnswer(question: QuizQuestion) {
-    const selectedAnswer = question.answers.find((answer) => answer.selected)?.text;
-    const correctAnswer = question.correct_answer;
-  
-    return selectedAnswer === correctAnswer;
-  }
-  

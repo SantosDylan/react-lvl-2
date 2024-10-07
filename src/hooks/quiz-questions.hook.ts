@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { Category } from '../interfaces/categories.interface';
 import { Difficulty } from '../interfaces/difficulties.interface';
 import { Answer, AnswerStatus, QuizQuestion } from '../interfaces/quiz-questions.interface';
+import { QuizResult } from '../interfaces/quiz-results.interface';
 import { localStorageUtils } from '../utils/local-storage.utils';
-import { getQuizQuestions, getQuizResultColor, isCorrectAnswer } from '../utils/quiz-questions.utils';
-import { QuizResult } from './quiz-results.hook';
-
+import { getQuizQuestions, getQuizResultColor } from '../utils/quiz-questions.utils';
 
 export const useQuizQuestions = () => {
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>(localStorageUtils.getQuizQuestions());
@@ -25,7 +24,6 @@ export const useQuizQuestions = () => {
   useEffect(() => {
     localStorageUtils.saveQuizResults(quizResults);
   }, [quizResults]);
-
 
   useEffect(() => {
     if (quizQuestions.length === 0) return;
@@ -76,7 +74,9 @@ export const useQuizQuestions = () => {
   };
 
   const resetQuiz = () => {
-    setQuizQuestions(questions => questions.map(question => ({...question, answers: question.answers.map(answer => ({...answer, status: 'not-defined'}))})));
+    setQuizQuestions((questions) =>
+      questions.map((question) => ({ ...question, answers: question.answers.map((answer) => ({ ...answer, status: 'not-defined' })) }))
+    );
     setCanSubmit(false);
     setQuizResults(null);
     localStorageUtils.clearQuizData();
@@ -109,19 +109,25 @@ export const useQuizQuestions = () => {
   };
 
   const updateAnswerStatus = () => {
-    const getStatus = (isCorrectAnswer: boolean): AnswerStatus => {
-      return isCorrectAnswer ? 'correct' : 'incorrect';
+    const determineAnswerStatus = (question: QuizQuestion, answer: Answer): AnswerStatus => {
+      if (answer.text === question.correct_answer) {
+        return 'correct';
+      }
+      if (answer.selected) {
+        return 'incorrect';
+      }
+      return 'not-defined';
     };
 
-    const cleanQuestions = quizQuestions.map((question) => ({
+    const updatedQuestions = quizQuestions.map((question) => ({
       ...question,
-      answers: question.answers.map((answer) => ({ ...answer, status: 'not-defined' as AnswerStatus })),
+      answers: question.answers.map((answer) => ({
+        ...answer,
+        status: determineAnswerStatus(question, answer),
+      })),
     }));
-    const questions = cleanQuestions.map((question) => ({
-      ...question,
-      answers: question.answers.map((answer) => (answer.selected ? { ...answer, status: getStatus(isCorrectAnswer(question)) } : answer)),
-    }));
-    setQuizQuestions(questions);
+
+    setQuizQuestions(updatedQuestions);
   };
 
   return {
@@ -133,6 +139,6 @@ export const useQuizQuestions = () => {
     canSubmit,
     submitQuiz,
     quizResults,
-    resetQuiz
+    resetQuiz,
   };
 };

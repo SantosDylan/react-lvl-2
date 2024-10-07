@@ -1,5 +1,5 @@
-import { QuizResult } from '../hooks/quiz-results.hook';
 import { QuizQuestion } from '../interfaces/quiz-questions.interface';
+import { QuizResult } from '../interfaces/quiz-results.interface';
 
 const QUIZ_QUESTIONS_KEY = 'quizQuestions';
 const QUIZ_RESULTS_KEY = 'quizResults';

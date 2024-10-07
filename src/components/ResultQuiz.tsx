@@ -1,4 +1,4 @@
-import { QuizResult } from '../hooks/quiz-results.hook';
+import { QuizResult } from '../interfaces/quiz-results.interface';
 
 interface ResultQuizProps {
   quizResults: QuizResult | null;
@@ -14,7 +14,7 @@ export default function ResultQuiz({ quizResults, numberOfQuizQuestions }: Resul
     const colorClasses = {
       red: 'bg-red-300',
       yellow: 'bg-yellow-300',
-      green: 'bg-green-300 text-white',
+      green: 'bg-green-500 text-white',
     };
 
     return `${defaultClasses} ${colorClasses[color]}`;
